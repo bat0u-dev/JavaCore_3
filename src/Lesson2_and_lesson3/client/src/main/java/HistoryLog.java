@@ -32,25 +32,21 @@ public class HistoryLog {
         }
     }
 
-    public void getHistory() throws IOException {
+    public String[] getHistory() throws IOException {
+
+        String[] historyArr = new String[100];
+
         try {
-
-            Controller controller = new Controller();/* не придумал, как обойтись без создания данного объекта,
-            по сути имеющего чисто "служебное назнаение, чтобы получить поле textArea" */
-
             readHistory = new FileReader(FILE_PATH);
             this.historyBuffer = new BufferedReader(readHistory);
 
             for (int i = 0; i < 100; i++) {
-                if(this.historyBuffer != null){
-                    controller.textArea.appendText(this.historyBuffer.readLine());
-                } else {
-                    break;
-                }
+                historyArr[i] = this.historyBuffer.readLine();
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        return historyArr;
     }
 }
 

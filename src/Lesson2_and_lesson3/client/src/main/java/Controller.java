@@ -69,13 +69,13 @@ public class Controller implements Initializable {
             }
             clientOutput.writeUTF(message);
             textField.clear();
+            textField.requestFocus();
         } catch (IOException e) {
             textField.clear();
             System.out.println("Not connected to server. Socket has been closed. Restart the application!");
             textArea.appendText("Not connected to server. Socket has been closed. Restart the application!");
             textArea.appendText("\n");
         }
-
     }
 
     public void sendMessage(String message) {
@@ -107,7 +107,16 @@ public class Controller implements Initializable {
                 clientInput = new DataInputStream(clientSocket.getInputStream());
                 clientOutput = new DataOutputStream(clientSocket.getOutputStream());
                 HistoryLog historyLog = new HistoryLog();
-                historyLog.getHistory();
+
+                for (int i = 0; i < 100; i++) {
+                    if (historyLog.getHistory()[i] != null) {
+                        if(historyLog.getHistory()[i].equals("Authorization successful.")) continue;
+                        textArea.appendText(historyLog.getHistory()[i] + "\n");
+                    } else {
+                        break;
+                    }
+                }
+                historyLog.getReadHistory().close();
 
                 new Thread(() -> {
                     try {
@@ -121,21 +130,19 @@ public class Controller implements Initializable {
                         while (true) {
                             String inputMsg = clientInput.readUTF();
                             if (inputMsg.equals("")) continue;
-                            if (inputMsg.equals("Authorization successful.")) {
-                                try {
-                                    textArea.appendText(inputMsg);
-                                    Thread.sleep(2000);
-                                    textArea.clear();
-                                    continue;
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                            }
+//                            if (inputMsg.equals("Authorization successful.")) {
+//                                try {
+//                            textArea.appendText(inputMsg);
+//                                    Thread.sleep(2000);
+//                                    textArea.clear();
+//                                    continue;
+//                                } catch (InterruptedException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }
                             textArea.appendText(inputMsg);
                             textArea.appendText("\n");
                             historyLog.writeHistoryToLogFile(inputMsg);
-//                            historyLog.getWriteToHistoryLog().write(inputMsg + "\n");
-//                            historyLog.getWriteToHistoryLog().flush();
                             if (inputMsg.equals("Echo : /end")) {
                                 textArea.appendText("Connection has been closed by your command.");
                                 textArea.appendText("\n");
@@ -149,6 +156,7 @@ public class Controller implements Initializable {
                         e.printStackTrace();
                     } finally {
                         try {
+                            historyLog.getReadHistory().close();
                             historyLog.getWriteToHistoryLog().close();
                             clientSocket.close();
                         } catch (IOException e) {
@@ -167,6 +175,7 @@ public class Controller implements Initializable {
                         setAuthorized(false);
                     }
                 }).start();
+
             }
         } catch (IOException e) {
             e.printStackTrace();
