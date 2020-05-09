@@ -7,11 +7,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -37,7 +36,10 @@ public class Controller implements Initializable {
     private Socket clientSocket;
     private DataInputStream clientInput;
     private DataOutputStream clientOutput;
-    private boolean authorized;
+
+    public TextArea getTextArea() {
+        return textArea;
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -45,7 +47,6 @@ public class Controller implements Initializable {
     }
 
     public void setAuthorized(boolean authorized) {
-        this.authorized = authorized;
         if (authorized) {
             authPanel.setVisible(false);
             authPanel.setManaged(false);
@@ -105,6 +106,8 @@ public class Controller implements Initializable {
                 System.out.println("Connection to server successful:)");
                 clientInput = new DataInputStream(clientSocket.getInputStream());
                 clientOutput = new DataOutputStream(clientSocket.getOutputStream());
+                HistoryLog historyLog = new HistoryLog();
+                historyLog.getHistory();
 
                 new Thread(() -> {
                     try {
@@ -118,7 +121,7 @@ public class Controller implements Initializable {
                         while (true) {
                             String inputMsg = clientInput.readUTF();
                             if (inputMsg.equals("")) continue;
-                            if (inputMsg.equals("Authorization successful.")){
+                            if (inputMsg.equals("Authorization successful.")) {
                                 try {
                                     textArea.appendText(inputMsg);
                                     Thread.sleep(2000);
@@ -130,10 +133,14 @@ public class Controller implements Initializable {
                             }
                             textArea.appendText(inputMsg);
                             textArea.appendText("\n");
+                            historyLog.writeHistoryToLogFile(inputMsg);
+//                            historyLog.getWriteToHistoryLog().write(inputMsg + "\n");
+//                            historyLog.getWriteToHistoryLog().flush();
                             if (inputMsg.equals("Echo : /end")) {
                                 textArea.appendText("Connection has been closed by your command.");
                                 textArea.appendText("\n");
                                 clientSocket.close();
+                                historyLog.getWriteToHistoryLog().close();
                                 textArea.clear();
                                 break;
                             }
@@ -142,6 +149,7 @@ public class Controller implements Initializable {
                         e.printStackTrace();
                     } finally {
                         try {
+                            historyLog.getWriteToHistoryLog().close();
                             clientSocket.close();
                         } catch (IOException e) {
                             e.printStackTrace();
