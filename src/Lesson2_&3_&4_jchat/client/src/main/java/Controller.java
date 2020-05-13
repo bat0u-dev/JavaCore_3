@@ -107,10 +107,11 @@ public class Controller implements Initializable {
                 clientInput = new DataInputStream(clientSocket.getInputStream());
                 clientOutput = new DataOutputStream(clientSocket.getOutputStream());
                 HistoryLog historyLog = new HistoryLog();
+                String[] historyLogLines = historyLog.getHistory();
 
                 for (int i = 0; i < 100; i++) {
                     if (historyLog.getHistory()[i] != null) {
-                        if(historyLog.getHistory()[i].equals("Authorization successful.")) continue;
+                        if(historyLogLines[i].equals("Authorization successful.")) continue;
                         textArea.appendText(historyLog.getHistory()[i] + "\n");
                     } else {
                         break;

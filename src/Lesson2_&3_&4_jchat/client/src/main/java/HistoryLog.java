@@ -4,7 +4,7 @@ public class HistoryLog {
     private FileWriter writeToHistoryLog;
     private FileReader readHistory;
     private BufferedReader historyBuffer;
-    private static final String FILE_PATH = "src/Lesson2_and_lesson3/client/src/main/resources/history.txt";
+    private static final String FILE_PATH = "src/Lesson2_&3_&4_jchat/client/src/main/resources/history.txt";
 
     public FileWriter getWriteToHistoryLog() {
         return writeToHistoryLog;
