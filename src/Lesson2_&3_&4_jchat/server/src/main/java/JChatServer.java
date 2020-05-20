@@ -2,10 +2,19 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Vector;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class JChatServer {
     private Vector<ClientHandler> clientsList;
+    private static ExecutorService executorService = Executors.newCachedThreadPool();/*может сделать данное поле
+    final?! В целом не совсем понятно каким образом модификатор final влияет на ссылочные типы данных? Не сможем в
+    дальнейшем поменять значение, на которое сылается переменная объявленная как final?*/
     int clientCounter = 1;
+
+    public static ExecutorService getExecutorService() {
+        return executorService;
+    }
 
     public JChatServer() {
         try {
@@ -41,8 +50,7 @@ public class JChatServer {
         }
     }
 
-    public void serviceMessage(String message){
-
-    }
+//    public void serviceMessage(String message){
+//    }
 }
 

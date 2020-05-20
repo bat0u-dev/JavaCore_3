@@ -8,7 +8,7 @@ public class SQLHandler {
         try {
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\User\\" +
-                    "JavaDev\\JavaUniversity\\Java_3_homework's\\JavaCore_3\\src\\Lesson2_and_lesson3\\server\\Database.db");
+                    "JavaDev\\JavaUniversity\\Java_3_homework's\\JavaCore_3\\src\\Lesson2_&3_&4_jchat\\server\\Database.db");
             stmt = connection.createStatement();
         }catch (Exception e){
             e.printStackTrace();
