@@ -3,14 +3,13 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Text?>
 <?import javafx.scene.control.PasswordField?>
 <VBox fx:id="mainBox" fx:controller="Controller"
       xmlns:fx="http://javafx.com/fxml" alignment="center">
     <HBox fx:id="authPanel">
         <TextField fx:id="loginField" promptText="login" HBox.hgrow="ALWAYS"/>
         <PasswordField fx:id="passwordField" promptText="password" HBox.hgrow="ALWAYS"/>
-        <Button fx:id="connectBtn" text="Authorize" onAction="#sendAuthData"/>
+        <Button fx:id="connectBtn" text="Authorize" onAction="#sendAuthData" defaultButton="true"/>
     </HBox>
     <TextArea fx:id="textArea" editable="false" VBox.vgrow="ALWAYS" wrapText="true"/>
     <HBox fx:id="msgPanel" visible="false">
